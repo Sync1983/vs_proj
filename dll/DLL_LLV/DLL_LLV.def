@@ -1,0 +1,6 @@
+LIBRARY    "DLL_LLV.dll"
+
+EXPORTS
+GetClassObject	@1
+DestroyObject	@2
+GetClassNames	@3

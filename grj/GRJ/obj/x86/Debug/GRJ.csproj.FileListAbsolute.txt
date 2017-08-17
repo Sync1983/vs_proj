@@ -1,0 +1,9 @@
+C:\VS_proj\grj\GRJ\bin\x86\Debug\GRJ.exe.config
+C:\VS_proj\grj\GRJ\bin\x86\Debug\GRJ.exe
+C:\VS_proj\grj\GRJ\bin\x86\Debug\GRJ.pdb
+C:\VS_proj\grj\GRJ\obj\x86\Debug\GRJ.csprojResolveAssemblyReference.cache
+C:\VS_proj\grj\GRJ\obj\x86\Debug\GRJ.MainForm.resources
+C:\VS_proj\grj\GRJ\obj\x86\Debug\GRJ.Properties.Resources.resources
+C:\VS_proj\grj\GRJ\obj\x86\Debug\GRJ.csproj.GenerateResource.Cache
+C:\VS_proj\grj\GRJ\obj\x86\Debug\GRJ.exe
+C:\VS_proj\grj\GRJ\obj\x86\Debug\GRJ.pdb
