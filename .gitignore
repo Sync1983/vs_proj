@@ -37,3 +37,8 @@
 *.iobj
 *.ipdb
 *.db
+*.ilk
+*.log
+*.obj
+*.idb
+*.pdb
