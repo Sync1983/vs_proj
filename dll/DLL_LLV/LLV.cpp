@@ -273,7 +273,8 @@ bool LLV::add_item(LPWSTR name, double count, double price) {
 	cmd(iface->put_PositionSum(count * price));
 	cmd(iface->put_Quantity(count));
 	cmd(iface->put_Price(price));
-	cmd(iface->put_Table(TED::Fptr::TaxVATNo));
+	cmd(iface->put_TaxMode(TED::Fptr::TaxVATNo));
+  cmd( iface->put_TaxNumber( TED::Fptr::TaxVATNo ) );
 	cmd(iface->put_Name(name));
 	cmd(iface->Registration());
 	
