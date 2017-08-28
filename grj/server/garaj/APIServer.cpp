@@ -2,7 +2,6 @@
 #include <locale.h>
 
 #include "APIServer.h"
-#include "functions.h"
 
 APIServer::APIServer() {
 	m_iMemory = 0;
@@ -49,7 +48,7 @@ void APIServer::copyVariant(tVariant *var_dst, tVariant *var_src) {
 }   
 
 bool ADDIN_API APIServer::Init(void * pConnection) {
-	m_iConnect = (IAddInDefBase*)pConnection;	  
+	m_iConnect = (IAddInDefBase*)pConnection;	    
 	return m_iConnect != NULL;
 }
 
@@ -81,23 +80,23 @@ bool ADDIN_API APIServer::RegisterExtensionAs(WCHAR_T ** wsExtensionName) {
 }
 
 long ADDIN_API APIServer::GetNProps() {
-	return lastProps;
+	return prop_count;
 }
 
 long ADDIN_API APIServer::FindProp(const WCHAR_T * wsPropName) {	
-	for (properties_it i = properties.begin(); i != properties.end(); ++i) {		
-		if ((wcscmp(wsPropName, i->second.Name[0]) == 0) || (wcscmp(wsPropName, i->second.Name[1]) == 0)) {
-			return i->first;
+  for( uint8_t i = 0; i < prop_count; ++i ){
+		if ((wcscmp(wsPropName, properties[i].Name[0]) == 0) || (wcscmp(wsPropName, properties[i].Name[1]) == 0)) {
+			return i;
 		}
 	}
 	return 0;
 }
 
 const WCHAR_T *ADDIN_API APIServer::GetPropName(long lPropNum, long lPropAlias) {
-	if ( (lPropNum >= lastProps) || (lPropAlias > 1) ){
+	if ( (lPropNum >= prop_count) || (lPropAlias > 1) ){
 		return NULL;
 	}	
-	wchar_t *wsCurrentName = (wchar_t*)&properties[(Props)lPropNum].Name[lPropAlias];
+	wchar_t *wsCurrentName = (wchar_t*)&properties[lPropNum].Name[lPropAlias];
 	WCHAR_T *wsPropName = NULL;
 	int iActualSize = 0;
 
@@ -112,7 +111,7 @@ const WCHAR_T *ADDIN_API APIServer::GetPropName(long lPropNum, long lPropAlias) 
 }
 
 bool ADDIN_API APIServer::GetPropVal(const long lPropNum, tVariant * pvarPropVal) {
-	tVariant *value = properties[(Props)lPropNum].value;
+	tVariant *value = properties[lPropNum].value;
 
 	if (value == 0) {
 		return false;
@@ -124,48 +123,48 @@ bool ADDIN_API APIServer::GetPropVal(const long lPropNum, tVariant * pvarPropVal
 }
 
 bool ADDIN_API APIServer::SetPropVal(const long lPropNum, tVariant * varPropVal) {
-	tVariant *value = properties[(Props)lPropNum].value;
+	tVariant *value = properties[lPropNum].value;
 
 	if (value == 0) {
-    properties[(Props)lPropNum].value = (tVariant*) malloc( sizeof( tVariant ) );		
+    properties[lPropNum].value = (tVariant*) malloc( sizeof( tVariant ) );		
 	}
 
-	copyVariant( properties[(Props)lPropNum].value, varPropVal);	
+	copyVariant( properties[lPropNum].value, varPropVal);	
 	return true;
 }
 
 bool ADDIN_API APIServer::IsPropReadable(const long lPropNum) {
-	if (lPropNum >= lastProps) {
+	if (lPropNum >= prop_count) {
 		return false;
 	}
-	return properties[(Props)lPropNum].readable;
+	return properties[lPropNum].readable;
 }
 
 bool ADDIN_API APIServer::IsPropWritable(const long lPropNum) {
-	if (lPropNum > lastProps) {
+	if (lPropNum > prop_count) {
 		return false;
 	}
-	return properties[(Props)lPropNum].writeable;
+	return properties[lPropNum].writeable;
 }
 
 long ADDIN_API APIServer::GetNMethods() {
-  return lastFunct;
+  return func_count;
 }
 
 long ADDIN_API APIServer::FindMethod(const WCHAR_T * wsMethodName) {
-  for( functions_it i = functions.begin( ); i != functions.end( ); ++i ) {
-    if( ( wcscmp( wsMethodName, i->second.Name[0] ) == 0 ) || ( wcscmp( wsMethodName, i->second.Name[1] ) == 0 ) ) {
-      return i->first;
+  for(uint8_t i = 0; i < func_count; ++i ) {
+    if( ( wcscmp( wsMethodName, functions[i].Name[0] ) == 0 ) || ( wcscmp( wsMethodName, functions[i].Name[1] ) == 0 ) ) {
+      return i;
     }
   }
   return 0;
 }
 
 const WCHAR_T *ADDIN_API APIServer::GetMethodName(const long lMethodNum, const long lMethodAlias) {
-  if( (lMethodNum >= lastFunct) || ( lMethodAlias > 1) ) {
+  if( (lMethodNum >= func_count) || ( lMethodAlias > 1) ) {
     return NULL;
   }
-  wchar_t *wsCurrentName = (wchar_t*)&functions[(Functs)lMethodNum].Name[lMethodAlias];
+  wchar_t *wsCurrentName = (wchar_t*)&functions[lMethodNum].Name[lMethodAlias];
   WCHAR_T *wsPropName = NULL;
   int iActualSize = 0;
 
@@ -180,10 +179,10 @@ const WCHAR_T *ADDIN_API APIServer::GetMethodName(const long lMethodNum, const l
 }
 
 long ADDIN_API APIServer::GetNParams(const long lMethodNum) {
-  if( lMethodNum >= lastFunct ) {
+  if( lMethodNum >= func_count ) {
     return false;
   }
-	return functions[(Functs)lMethodNum].params_num;
+	return functions[lMethodNum].params_num;
 }
 
 bool ADDIN_API APIServer::GetParamDefValue(const long lMethodNum, const long lParamNum, tVariant * pvarParamDefValue) {
@@ -191,10 +190,10 @@ bool ADDIN_API APIServer::GetParamDefValue(const long lMethodNum, const long lPa
 }
 
 bool ADDIN_API APIServer::HasRetVal(const long lMethodNum) {
-  if( lMethodNum >= lastFunct ) {
+  if( lMethodNum >= func_count ) {
     return false;
   }
-  return functions[(Functs)lMethodNum].is_function;
+  return functions[lMethodNum].is_function;
 }
 
 bool ADDIN_API APIServer::CallAsProc(const long lMethodNum, tVariant * paParams, const long lSizeArray) {

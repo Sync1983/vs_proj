@@ -9,31 +9,39 @@
 #include "IMemoryManager.h"
 #include <map>
 
-template<uint16_t SIZE>
-class CProperties {
-protected:
+class APIServer;
 
-  struct propItem {
-    wchar_t Name[2][50];
-    bool readable;
-    bool writeable;
-    tVariant *value;
-  };
+struct APIproperty {
+  const wchar_t Name[2][50];
+  bool readable;
+  bool writeable;
+  tVariant *value;
+  inline APIproperty operator =( const APIproperty &in ) {
+    memcpy( (void*)Name[0], in.Name[0], 50 );
+    memcpy( (void*)Name[1], in.Name[1], 50 );    
+    readable = in.readable;
+    writeable = in.writeable;
+    value = in.value;
+    return in;
+  }
+} ;
 
-  propItem props[SIZE];
-
-public:
-
+struct APIfunction{
+  wchar_t Name[2][50];
+  int		params_num;
+  bool	is_function;  
 };
 
-class /*GARAJ_API*/ APIServer : public IComponentBase {
+class APIServer : public IComponentBase {
 protected:
 	IMemoryManager *m_iMemory;
 	IAddInDefBase *m_iConnect;   
 	void copyVariant(tVariant *var_dst, tVariant *var_src);
 
-  virtual CProperties<0> properties;
-
+  APIproperty *properties;
+  APIfunction *functions;
+  uint8_t prop_count = 0;
+  uint8_t func_count = 0;
 public:
 	APIServer(void);
   uint32_t convToShortWchar( WCHAR_T** Dest, const wchar_t* Source, uint32_t len );
