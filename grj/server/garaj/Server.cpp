@@ -51,7 +51,7 @@ bool Server::start_server() {
   hints.ai_family   = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
-  hints.ai_flags    = AI_PASSIVE;
+  hints.ai_flags    = AI_PASSIVE;  
   
   tVariant *port_var = this->properties[0].value;
   if( !port_var ) {    
@@ -99,8 +99,9 @@ bool Server::start_server() {
 bool Server::stop_server( ) {
   stop_listen = true;
   listen_th.join( );
-  FreeAddrInfo( result );
+  FreeAddrInfo( result );  
   closesocket( ListenSocket );
+  shutdown( ClientSocket, SD_BOTH );
   WSACleanup( );
   return true;
 }
@@ -119,28 +120,33 @@ void Server::wsa_error_to_api( const wchar_t *message, int code) {
 }
 
 void Server::listen_socket( ) {
+  int16_t len;
+  char *buf = (char*)malloc( 100 );
+
   while( !stop_listen ) {
     SOCKET listen_sc = accept( ListenSocket, NULL, NULL );
     if( listen_sc == INVALID_SOCKET ) {
       wsa_error_to_api( L"accept failed with error", WSAGetLastError( ) );
       continue;
     }
-    std::thread lsc = std::thread( &Server::listen_client, this, listen_sc );
-    lsc.detach( );
-  }  
-}
-
-void Server::listen_client( SOCKET soc ) {
-  int16_t len;
-  char *buf = (char*)malloc(100);  
-    
-  while(!stop_listen ){
-    len = recv( soc, buf, 100, 0 );
+    len = recv( listen_sc, buf, 10, MSG_WAITALL );
     if( len == -1 ) {
       this->wsa_error_to_api( L"Recive data error", WSAGetLastError( ) );
       return;
     }
+    //std::thread lsc = std::thread( &Server::listen_client, this, listen_sc );
+    //lsc.detach( );
+  }  
+  free( buf );
+}
+
+void Server::listen_client( SOCKET soc ) {
+  /*
+    
+  while(!stop_listen ){
+    
+    
   }
 
-  free( buf );
+  */
 }

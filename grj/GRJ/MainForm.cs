@@ -9,23 +9,24 @@ using System.Windows.Forms;
 
 namespace GRJ {
     public partial class MainForm : Form {
-    protected string kbdText;
+    protected string kbdText, inText;
 
     public MainForm() {
-      InitializeComponent();
-      btnPanel.Hide( );
-      outputPanel.Show( );
-      string[] r = { "a", "b" };
-      answerGrid.Rows.Add(r );
+      InitializeComponent();      
     }
 
     private void MainForm_KeyPress( object sender, KeyPressEventArgs e ) {
       if( e.KeyChar != 13 ) {
         kbdText += e.KeyChar.ToString( );
+        inText = "";
       } else {
-        InputCode.Text = kbdText;
+        inText = kbdText;
         kbdText = "";
       }      
+    }
+
+    private void MainForm_Deactivate( object sender, EventArgs e ) {
+      this.Focus( );
     }
   }
 }
