@@ -10,9 +10,11 @@ using System.Windows.Forms;
 namespace GRJ {
     public partial class MainForm : Form {
     protected string kbdText, inText;
+    protected Server server;
 
     public MainForm() {
-      InitializeComponent();      
+      InitializeComponent();
+      server = new Server( );
     }
 
     private void MainForm_KeyPress( object sender, KeyPressEventArgs e ) {
@@ -23,6 +25,10 @@ namespace GRJ {
         inText = kbdText;
         kbdText = "";
       }      
+    }
+
+    private void MainForm_FormClosing( object sender, FormClosingEventArgs e ) {
+      server.Close();      
     }
 
     private void MainForm_Deactivate( object sender, EventArgs e ) {

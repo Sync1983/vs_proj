@@ -67,6 +67,7 @@
       this.TopMost = true;
       this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
       this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
       this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainForm_KeyPress);
       this.ResumeLayout(false);
 
